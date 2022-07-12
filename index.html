@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"
+    integrity="sha512-xIPqqrfvUAc/Cspuj7Bq0UtHNo/5qkdyngx6Vwt+tmbvTLDszzXM0G6c91LXmGrRx8KEPulT+AfOOez+TeVylg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+  <style>
+ /*    .maindata {
+      display: flex;
+      justify-content: space-between;
+    } */
+  </style>
+
+  <!-- Table color -->
+  <style>
+    tr:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+
+/*     th {
+  text-align: center;
+  
+} */
+
+ 
+th> td {
+  justify-content: start;
+}
+th ,tr,tr>td{
+  text-align: center;
+}
+
+ 
+  </style>
+
+  <title>Data page</title>
+</head>
+
+<body>
+  <div id="overlay">
+    <img src="./img/preloader.gif" alt="Preloader icon" />
+  </div>
+
+  <main>
+    <div id="table-section">
+      <form action="/">
+        <img src="./img/search-icon.svg" alt="Search Icon" />
+        <input type="text" placeholder="Enter something" name="search-box" id="search-box" value="" />
+      </form>
+
+      <div id="table-wrapper">
+        <div id="table-headers">
+          <table>
+            <thead>
+              <tr class="maindatahead">
+                <th class="column1">Id</th>
+                <th class="column2">FirstName</th>
+                <th class="column3">LastName</th>
+                <th class="column4">Email</th>
+                <th class="column5">Phone</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+
+        <!-- id="table-data" -->
+
+        <div>
+          <table>
+            <tbody id="mytabledata">
+              <!--        <tr class="data-row">
+                  <td class="column1">28</td>
+                  <td class="column2">Larisa</td>
+                  <td class="column3">Llaneza</td>
+                  <td class="column4">SCallison@non.org</td>
+                  <td class="column5">(763)248-9034</td>
+                </tr> -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details box -->
+
+    <div id="info-wrapper">
+      <h1>Details</h1>
+      <p>Click on a table item to get detailed information</p>
+      <div id="info-content">
+        <div><b>User selected:</b><span id="userslected"> Marcellin Shrestha </span></div>
+        <div>
+          <b id="descriptin">Description: </b>
+          <textarea cols="50" rows="5" readonly id="description">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, quia nihil. Est, illum minima libero rerum, nihil distinctio placeat sint nam quae repellendus obcaecati delectus totam non odio. Sint, reprehenderit?
+              </textarea>
+        </div>
+        <div><b>Address:</b><span id="Address"> </span></div>
+        <div><b>City:</b><span id="city">   </span></div>
+        <div><b>State:</b> <span id="State"> </span> </div>
+        <div><b>Zip:</b> <span id="zip">  </span> </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /*      var url =
+         "http://www.filltext.com/?rows=32&id=%7Bnumber%7C1000%7D&firstName=%7BfirstName%7D&lastName=%7BlastName%7D&email=%7Bemail%7D&phone=%7Bphone%7C(xxx)xxx-xx-xx%7D&address=%7BaddressObject%7D&description=%7Blorem%7C32%7D";
+  */
+    const getUsers = () => {
+      axios
+        .get(
+          "http://www.filltext.com/?rows=32&id=%7Bnumber%7C1000%7D&firstName=%7BfirstName%7D&lastName=%7BlastName%7D&email=%7Bemail%7D&phone=%7Bphone%7C(xxx)xxx-xx-xx%7D&address=%7BaddressObject%7D&description=%7Blorem%7C32%7D"
+        )
+        .then(function (response) {
+          // handle success
+          var mydatas = response.data;
+          // console.log(mydatas);
+
+          console.log(mydatas);
+
+          // let mydatas1 = document.querySelector("tbody")
+
+
+          $("#search-box").on("keyup", function () {
+            let value = $(this).val()
+
+            console.log(value)
+
+            var data1 = searchTable(value, mydatas)
+
+            buildTAbledata(data1);
+
+          })
+
+
+          buildTAbledata(mydatas)
+
+          function searchTable(value, mydatas) {
+            var filtereddata = []
+
+            for (let i = 0; i < mydatas.length; i++) {
+              value = value.toLowerCase()
+
+              var name = mydatas[i].firstName.toLowerCase()
+
+              if (name.includes(value)) {
+                filtereddata.push(mydatas[i])
+
+              }
+
+            }
+
+            return filtereddata;
+
+          }
+
+          function buildTAbledata(data1) {
+            let mytablesdata = "";
+
+            let i = 0;
+
+            var temp = "";
+            data1.forEach((itemData) => {
+
+              temp += "<tr >";
+              temp += "<td>" + itemData.id + "</td>";
+              temp += "<td>" + itemData.firstName + "</td>";
+              temp += "<td>" + itemData.lastName + "</td>";
+              temp += "<td>" + itemData.email + "</td>";
+              temp += "<td>" + itemData.phone + "</td></tr>";
+
+
+            });
+            document.getElementById("mytabledata").innerHTML = temp;
+
+          }
+
+
+          // Adding Id to the Table row
+          var tables = document
+            .getElementsByTagName("tr");
+
+          // Looping over tables
+          for (var i = 0; i < tables.length; i++) {
+
+            // Get the ith table
+            var table = tables[i];
+
+            // Set the id dynamically
+            table.setAttribute("id", i + -1);
+
+            // The line below will also give id
+            // dynamically to the tables
+            //table.id = i+1;
+          }
+
+
+
+          var string = '';
+          $("#mytabledata tr").click(function () {
+            var serviceID = $(this).attr('id');
+            // alert("serviceID :: " + serviceID);
+            console.log(serviceID)
+            console.log(mydatas[serviceID])
+
+
+            let mydetails =  string;
+
+            let myselectedarray = []
+
+            myselectedarray.push(mydatas[serviceID])
+
+            console.log(myselectedarray)
+
+            let mytabedetails = document.querySelector("#info-content")
+
+            mytabedetails.style.display = "block"
+
+            // User Name
+            let userslected = document.querySelector("#userslected")
+
+            userslected.innerHTML = myselectedarray[0].firstName
+
+            console.log(myselectedarray[0].firstName)
+
+
+            // description
+            let description1 = document.querySelector("#description")
+
+            description1.innerHTML = myselectedarray[0].description
+
+            console.log(myselectedarray[0].description)
+
+            // Address
+            let Address1 = document.querySelector("#Address")
+
+            Address1.innerHTML = myselectedarray[0].address.streetAddress
+
+            console.log(myselectedarray[0].Address)
+
+
+            // city
+            let city1 = document.querySelector("#city")
+
+            city1.innerHTML = myselectedarray[0].address.city
+
+            console.log(myselectedarray[0].address.city)
+
+
+
+            // city
+            let State1 = document.querySelector("#State")
+
+            State1.innerHTML = myselectedarray[0].address.state
+
+            console.log(myselectedarray[0].address.state)
+
+            //  zip
+            let zip1 = document.querySelector("#zip")
+
+            zip1.innerHTML = myselectedarray[0].address.zip
+
+            console.log(myselectedarray[0].address.zip)
+
+
+
+
+            var rowId = event.target.parentNode.parentNode.id;
+
+            console.log(rowId)
+
+            mytabedetails.append(mydetails)
+
+            // Getting the table element
+          }
+          )
+
+
+
+
+
+
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+    };
+
+    getUsers();
+  </script>
+
+  <script>
+    function show() {
+      var rowId = event.target.parentNode.parentNode.id;
+      //this gives id of tr whose button was clicked
+    }
+  </script>
+
+
+
+  <script src="./script.js"></script>
+</body>
+
+</html>
